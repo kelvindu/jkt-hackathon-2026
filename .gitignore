@@ -1,0 +1,22 @@
+# ── Credentials ───────────────────────────────────────────────
+.env
+
+# ── Python ────────────────────────────────────────────────────
+.venv/
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+.Python
+
+# ── Terraform ─────────────────────────────────────────────────
+.terraform/
+.terraform.lock.hcl
+terraform.tfstate
+terraform.tfstate.backup
+*.tfvars
+crash.log
+override.tf
+
+# ── macOS ─────────────────────────────────────────────────────
+.DS_Store

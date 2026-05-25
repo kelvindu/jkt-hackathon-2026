@@ -1,0 +1,18 @@
+# ─────────────────────────────────────────────────────────────
+# Option A: Official Datadog Managed MCP Server (recommended)
+# No local setup. OAuth login. Works with Cursor, Claude Desktop,
+# Claude Code, OpenAI Codex CLI.
+# ─────────────────────────────────────────────────────────────
+ 
+# Add to MCP client config (e.g. .cursor/mcp.json or claude_desktop_config.json):
+{
+  "mcpServers": {
+    "datadog": {
+      "type": "http",
+      "url": "https://mcp.datadoghq.com/api/unstable/mcp-server/mcp"
+    }
+  }
+}
+ 
+# Toolset-specific (APM + LLM Observability only — saves context window):
+# https://mcp.datadoghq.com/api/unstable/mcp-server/mcp?toolsets=apm,llm-observability
