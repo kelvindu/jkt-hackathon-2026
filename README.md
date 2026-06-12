@@ -276,7 +276,7 @@ Review the plan Terraform prints, then type `yes` to confirm and deploy.
 
 **Bedrock `AccessDeniedException`**
 - Confirm `AWS_ACCESS_KEY_ID` and `AWS_SECRET_ACCESS_KEY` are correct in `.env`
-- Ensure the `anthropic.claude-3-sonnet-20240229-v1:0` model is enabled in your AWS Bedrock console under **Model access** in the `us-east-1` region
+- Ensure the `amazon.nova-pro-v1:0` model is enabled in your AWS Bedrock console under **Model access** in the region you use
 
 **Terraform `Error: Invalid credentials`**
 - Double-check that the API key and App key entered during `terraform apply` match those in your Datadog account
