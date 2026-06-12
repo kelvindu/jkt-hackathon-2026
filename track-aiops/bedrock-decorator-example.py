@@ -33,25 +33,25 @@ def fetch_context(prompt: str) -> str:
     return 'Keep answers concise and practical.'
 
 # ── @llm marks the actual LLM call as an LLM span ────────────
-@llm(model_name='claude-3-sonnet', model_provider='bedrock')
+@llm(model_name='nova-pro', model_provider='bedrock')
 def ask(prompt: str, context: str) -> str:
     messages = [
-        {'role': 'user', 'content': f'{context}\n\n{prompt}'}
+        {'role': 'user', 'content': [{'text': f'{context}\n\n{prompt}'}]}
     ]
     LLMObs.annotate(
         input_data=[{'role': 'user', 'content': f'{context}\n\n{prompt}'}]
     )
     response = client.invoke_model(
-        modelId='anthropic.claude-3-sonnet-20240229-v1:0',
+        modelId='amazon.nova-pro-v1:0',
         body=json.dumps({
-            'anthropic_version': 'bedrock-2023-05-31',
-            'max_tokens': 512,
-            'messages': messages
+            'messages': messages,
+            'inferenceConfig': {
+                'max_new_tokens': 1024
+            }
         }),
         contentType='application/json'
     )
-    result = json.loads(response['body'].read())['content'][0]['text']
-
+    result = json.loads(response['body'].read())['output']['message']['content'][0]['text']
     LLMObs.annotate(
         output_data=[{'role': 'assistant', 'content': result}]
     )
@@ -71,5 +71,5 @@ def process_result(response: str) -> str:
 
 if __name__ == '__main__':
     run_pipeline('What makes an AI system production-ready?')
-    LLMObs.flush()   # Flush before process exits
+    LLMObs.flush()
     # Trace now visible in: app.datadoghq.com/llm/traces
