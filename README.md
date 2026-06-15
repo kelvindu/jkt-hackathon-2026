@@ -30,7 +30,7 @@ All scripts read credentials from a `.env` file in the `jkt-hackathon-2026/` roo
 cp .env.template .env
 ```
 
-**1.2** Open `.env` in any text editor and replace every placeholder with your real values:
+**1.2** Open `.env` in any text editor and replace every placeholder with your real values. Keep AWS_REGION to us-east-1.
 
 ```dotenv
 # ── Datadog ───────────────────────────────────────────────────
@@ -44,7 +44,7 @@ DD_LLMOBS_ML_APP=jakarta-hack-<TEAM_NAME> # Replace <TEAM_NAME> with your team n
 # ── AWS ───────────────────────────────────────────────────────
 AWS_ACCESS_KEY_ID=<YOUR_AWS_KEY>
 AWS_SECRET_ACCESS_KEY=<YOUR_AWS_SECRET>
-AWS_REGION=<YOUR_AWS_REGION>
+AWS_REGION=us-east-1
 ```
 
 > **Note:** Never commit your `.env` file. It is already excluded from version control.
