@@ -10,6 +10,7 @@ This guide walks you through setting up your environment and running the Track: 
 jkt-hackathon-2026/
 ├── .env.template              # Copy this to .env and fill in your credentials
 ├── shared/
+│   ├── SCORING.md             # Hackathon scoring guide — read this first
 │   ├── dashboard.tf           # Terraform config for your starter dashboard
 │   └── variables.tf           # Terraform variable definitions
 └── track-aiops/
@@ -17,6 +18,20 @@ jkt-hackathon-2026/
     ├── bedrock-decorator-example.py # Step 2 — traces with span decorators
     └── bedrock-mcp-agent.py         # Step 3 — agentic MCP call to Datadog
 ```
+
+---
+
+## Scoring Overview
+
+The full scoring breakdown is in [`shared/SCORING.md`](shared/SCORING.md) — read it before you start so you know what to aim for. This prep guide directly unlocks the following Datadog checkpoints:
+
+| Checkpoint | Points | Unlocked by |
+|---|---|---|
+| 🟢 First Trace | 100 | Script 1 — `basic-bedrock-call.py` |
+| 📊 Dashboard Live | 150 | Section 4 — Terraform starter dashboard |
+| 🔗 Tool Call Visible | 200 | Script 3 — `bedrock-mcp-agent.py` |
+
+> **Note:** Scoring checkpoints require traces and dashboards from your **own application**, not the starter scripts. Use these scripts to learn the pattern, then apply it to what you build.
 
 ---
 
@@ -30,7 +45,7 @@ All scripts read credentials from a `.env` file in the `jkt-hackathon-2026/` roo
 cp .env.template .env
 ```
 
-**1.2** Open `.env` in any text editor and replace every placeholder with your real values. Keep AWS_REGION to us-east-1.
+**1.2** Open `.env` in any text editor and replace every placeholder with your real values:
 
 ```dotenv
 # ── Datadog ───────────────────────────────────────────────────
@@ -130,6 +145,7 @@ source .venv/bin/activate
 ---
 
 ### Script 1 — Basic LLM Trace (`basic-bedrock-call.py`)
+> 🟢 **Scoring:** Understand this pattern to unlock **First Trace — 100 pts** in your own app.
 
 This script demonstrates the minimum code needed to send a single LLM call to Amazon Bedrock and have it appear as a trace in Datadog LLM Observability. It shows how to enable `LLMObs` in agentless mode with just a few lines.
 
@@ -153,6 +169,7 @@ python track-aiops/basic-bedrock-call.py
 ---
 
 ### Script 2 — Advanced Trace with Span Decorators (`bedrock-decorator-example.py`)
+> 🔗 **Scoring:** This pattern shows you how to structure spans — apply it in your app to support the **Tool Call Visible — 200 pts** checkpoint.
 
 This script builds on Script 1 by introducing `ddtrace` span decorators — `@workflow`, `@llm`, `@tool`, and `@task`. Each decorator marks a function as a specific type of span, giving you a structured, nested trace in Datadog rather than a single flat span.
 
@@ -184,6 +201,7 @@ This structure gives you visibility into each stage of your pipeline, not just t
 ---
 
 ### Script 3 — Agentic MCP Call to Datadog (`bedrock-mcp-agent.py`)
+> 🔗 **Scoring:** Running this in your own app captures an agent tool call as a span — required for **Tool Call Visible — 200 pts**.
 
 This script demonstrates a true agentic loop where Bedrock itself decides to call a tool — in this case the **Datadog MCP server** — to fetch live monitor data before generating its final answer. The LLM is not just receiving pre-fetched data; it is driving the tool call.
 
@@ -220,6 +238,7 @@ The two `llm` spans represent the two turns of the agentic loop — the first wh
 ---
 
 ## Section 4 — Deploy Your Starter Dashboard with Terraform
+> 📊 **Scoring:** Deploying and customising this dashboard (≥3 widgets, live data) unlocks **Dashboard Live — 150 pts**.
 
 The `shared/` directory contains a Terraform configuration that creates an **LLM Observability starter dashboard** in your Datadog account. The dashboard includes widgets for request rate, P95 latency, total token usage, and error rate.
 
@@ -276,7 +295,7 @@ Review the plan Terraform prints, then type `yes` to confirm and deploy.
 
 **Bedrock `AccessDeniedException`**
 - Confirm `AWS_ACCESS_KEY_ID` and `AWS_SECRET_ACCESS_KEY` are correct in `.env`
-- Ensure the `amazon.nova-pro-v1:0` model is enabled in your AWS Bedrock console under **Model access** in the region you use
+- Ensure the `anthropic.claude-3-sonnet-20240229-v1:0` model is enabled in your AWS Bedrock console under **Model access** in the `us-east-1` region
 
 **Terraform `Error: Invalid credentials`**
 - Double-check that the API key and App key entered during `terraform apply` match those in your Datadog account
