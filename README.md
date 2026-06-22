@@ -54,7 +54,7 @@ DD_APP_KEY=<YOUR_DATADOG_APP_KEY>         # Found in Datadog → Organization Se
 DD_SITE=datadoghq.com
 DD_LLMOBS_ENABLED=1
 DD_LLMOBS_AGENTLESS_ENABLED=1            # No local Datadog Agent needed
-DD_LLMOBS_ML_APP=jakarta-hack-<TEAM_NAME> # Replace <TEAM_NAME> with your team name e.g. jakarta-hack-team-alpha
+DD_LLMOBS_ML_APP=<TEAM_NAME> # Replace <TEAM_NAME> with your team name e.g. jakarta-hack-team-alpha
 
 # ── AWS ───────────────────────────────────────────────────────
 AWS_ACCESS_KEY_ID=<YOUR_AWS_KEY>
