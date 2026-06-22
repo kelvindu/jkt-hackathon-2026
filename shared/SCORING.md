@@ -8,9 +8,9 @@
 | 2 | 📊 Dashboard Live | 150 | Custom dashboard ≥3 widgets, live (from actual modification, not starter repo) |
 | 3 | 🔗 Tool Call Visible | 200 | Agent tool call captured as a span (from actual app, not starter repo) |
 | 4 | 💸 Cost Tracked | 200 | Token/cost metrics in Datadog dashboard, cost can be seen in LLM trace |
-| 5 | 🧱 Error Handled | 250 | Graceful error + monitor/alert configured |
-| 6 | 🚀 End-to-End Demo | 300 | Full workflow running with observability |
-| 7 | 🎯 Ops Ready Bonus | 300 | Monitor Runbook + alert policy + SLO all defined |
+| 5 | 🧱 Error Handled | 250 | Graceful error shown in app trace + monitor/alert configured to respond to error accumulated |
+| 6 | 🚀 End-to-End Demo | 300 | Full workflow running with observability: complete trace shown in explorer with decorators on workflow, tool, tasks, and LLM calls at minimum. |
+| 7 | 🎯 Ops Ready Bonus | 300 | Monitor Runbook + alert policy to on-call team + SLO all defined |
 
 ---
 
