@@ -1,0 +1,43 @@
+# Local end-to-end demo: auth-service + sre-agent + ops-simulator.
+# Mirrors the EKS topology so you can validate before deploying.
+#
+#   docker compose up --build -d auth-service sre-agent
+#   docker compose run --rm ops-simulator            # fire a chaos+security drill
+#
+# Requires a .env file in this directory (see .env.example) for AWS + Datadog keys.
+services:
+  auth-service:
+    build:
+      context: ../auth-service
+    environment:
+      DD_SERVICE: auth-service
+      DD_ENV: hackathon
+      DD_AGENT_METRICS_ENABLED: "false"
+    ports:
+      - "8080:8080"
+
+  sre-agent:
+    build:
+      context: .
+    env_file:
+      - .env
+    environment:
+      AUTH_SERVICE_URL: http://auth-service:8080
+      AUTO_REMEDIATE: "true"
+    ports:
+      - "9000:9000"
+    depends_on:
+      - auth-service
+
+  ops-simulator:
+    build:
+      context: ../ops-simulator
+    environment:
+      AUTH_SERVICE_BASE_URL: http://auth-service:8080
+      WEBHOOK_URL: http://sre-agent:9000/webhook
+      SIMULATOR_MODE: all
+      FLOOD_DURATION_SECONDS: "10"
+    depends_on:
+      - auth-service
+      - sre-agent
+    profiles: ["drill"]

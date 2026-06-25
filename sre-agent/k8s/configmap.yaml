@@ -1,0 +1,19 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: sre-agent-config
+  namespace: hackathon
+data:
+  DD_SITE: "datadoghq.com"
+  DD_ENV: "hackathon"
+  DD_SERVICE: "sre-incident-agent"
+  DD_LLMOBS_ML_APP: "sre-incident-agent"
+  AWS_REGION: "us-east-1"
+  BEDROCK_MODEL_ID: "amazon.nova-pro-v1:0"
+  AUTH_SERVICE_URL: "http://auth-service:8080"
+  APP_SOURCE_DIR: "/app/app_under_test"
+  MAX_ITERATIONS: "8"
+  AUTO_REMEDIATE: "true"
+  # Optional managed guardrail (leave blank to use the in-process sanitizer only)
+  BEDROCK_GUARDRAIL_ID: ""
+  BEDROCK_GUARDRAIL_VERSION: "DRAFT"

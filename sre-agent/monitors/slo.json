@@ -1,0 +1,17 @@
+{
+  "name": "[SRE Agent] auth-service availability SLO",
+  "type": "metric",
+  "description": "99% of auth-service /api/v1/auth/validate requests should succeed (non-5xx) over a rolling 7-day window. Burning this SLO is what the agent's automated remediation protects.",
+  "tags": ["service:auth-service", "team:platform", "env:hackathon", "owner:sre-agent"],
+  "thresholds": [
+    { "timeframe": "7d", "target": 99.0, "warning": 99.5 },
+    { "timeframe": "30d", "target": 99.0, "warning": 99.5 }
+  ],
+  "target_threshold": 99.0,
+  "warning_threshold": 99.5,
+  "timeframe": "7d",
+  "query": {
+    "numerator": "sum:trace.servlet.request.hits{service:auth-service}.as_count() - sum:trace.servlet.request.errors{service:auth-service}.as_count()",
+    "denominator": "sum:trace.servlet.request.hits{service:auth-service}.as_count()"
+  }
+}

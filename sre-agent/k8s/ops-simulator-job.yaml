@@ -1,0 +1,32 @@
+# Drives the demo: activates chaos on auth-service, floods /validate, then POSTs
+# a Datadog monitor webhook to the SRE agent — which sanitizes + investigates +
+# auto-remediates. Run `kubectl create -f ops-simulator-job.yaml` to fire a drill.
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: ops-simulator-drill
+  namespace: hackathon
+spec:
+  backoffLimit: 1
+  ttlSecondsAfterFinished: 600
+  template:
+    metadata:
+      labels:
+        app: ops-simulator
+    spec:
+      restartPolicy: Never
+      containers:
+        - name: ops-simulator
+          image: <ECR_REGISTRY>/ops-simulator:latest
+          imagePullPolicy: Always
+          env:
+            - name: AUTH_SERVICE_BASE_URL
+              value: "http://auth-service:8080"
+            - name: WEBHOOK_URL
+              value: "http://sre-agent:9000/webhook"
+            - name: SIMULATOR_MODE
+              value: "all"            # chaos drill + security attack simulation
+            - name: CONCURRENT_THREADS
+              value: "120"
+            - name: FLOOD_DURATION_SECONDS
+              value: "10"

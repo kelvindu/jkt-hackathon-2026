@@ -1,0 +1,16 @@
+{
+  "name": "[SRE Agent] auth-service error rate elevated",
+  "type": "metric alert",
+  "query": "sum(last_5m):sum:trace.servlet.request.errors{service:auth-service}.as_count() / sum:trace.servlet.request.hits{service:auth-service}.as_count() > 0.1",
+  "message": "{{#is_alert}}\nauth-service error rate is above 10% over the last 5 minutes.\n\n## Runbook\n1. Confirm degradation: `GET /actuator/health` on auth-service (look for db component DOWN / pool exhaustion).\n2. Check the SRE Agent event stream (source:sre-incident-agent) for an automated RCA.\n3. If the agent has NOT already remediated, disable the fault: `POST /api/v1/admin/chaos/deactivate`.\n4. Recycle the DB connection pool and verify recovery via `/actuator/health`.\n5. If error rate persists, page the platform on-call and follow https://runbooks.internal/auth-service/db-timeout\n\n## Auto-remediation\nThe SRE Incident-Response Agent subscribes to this monitor's webhook and will attempt step 3 automatically; its RCA + outcome are published as a Datadog Event tagged `agent:sre-incident-agent`.\n{{/is_alert}}\n{{#is_recovery}}\nauth-service error rate has recovered below threshold.\n{{/is_recovery}}\n\n@webhook-sre-agent @slack-platform-oncall",
+  "tags": ["service:auth-service", "team:platform", "env:hackathon", "owner:sre-agent"],
+  "priority": 2,
+  "options": {
+    "thresholds": { "critical": 0.1, "warning": 0.05 },
+    "notify_audit": false,
+    "include_tags": true,
+    "new_group_delay": 60,
+    "renotify_interval": 0,
+    "escalation_message": "auth-service still erroring — agent remediation may have failed. Page on-call now."
+  }
+}

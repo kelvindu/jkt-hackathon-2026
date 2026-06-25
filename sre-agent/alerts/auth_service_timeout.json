@@ -1,0 +1,32 @@
+{
+  "version": "1.0",
+  "scenarios": [
+    {
+      "name": "auth-service HTTP 5xx error rate spiked",
+      "description": "Error rate and latency on auth-service /api/v1/auth/validate spiked during a load surge. Threads are blocking on database connection acquisition and requests are timing out (DatabaseTimeoutException), exhausting the connection pool.",
+      "initial_context": {
+        "service": "auth-service",
+        "endpoint": "/api/v1/auth/validate",
+        "suspected_technical_cause": "Injected DB connection-pool timeout fault in AuthValidationService: a CPU burn + 5s Thread.sleep on the request path under chaos mode, throwing DatabaseTimeoutException and exhausting the pool.",
+        "suspected_file": "src/main/java/com/hackathon/auth/service/AuthValidationService.java",
+        "error_codes": ["500", "503"],
+        "symptoms": [
+          "DatabaseTimeoutException: Timed out waiting for connection from pool",
+          "connection pool exhaustion",
+          "p95 latency > 5s under load"
+        ],
+        "business_metrics": {
+          "stuck_customers": 42,
+          "financial_bleed_rate_usd_per_min": 145,
+          "runbook_savings_usd": 1800,
+          "data_source": "simulated"
+        }
+      },
+      "metadata": {
+        "severity": "high",
+        "team": "platform",
+        "runbook": "https://runbooks.internal/auth-service/db-timeout"
+      }
+    }
+  ]
+}
