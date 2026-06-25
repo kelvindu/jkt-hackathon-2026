@@ -1,0 +1,25 @@
+version: 0.2
+
+env:
+  shell: bash
+
+phases:
+  pre_build:
+    commands:
+      - aws --version
+      - echo "Logging in to Amazon ECR..."
+      - aws ecr get-login-password --region "$AWS_DEFAULT_REGION" | docker login --username AWS --password-stdin "$ECR_REGISTRY"
+      - test -n "$IMAGE_TAG"
+  build:
+    commands:
+      - echo "Building auth-service image $ECR_REPOSITORY_URI:$IMAGE_TAG"
+      - docker build -t "$ECR_REPOSITORY_URI:$IMAGE_TAG" .
+  post_build:
+    commands:
+      - echo "Pushing auth-service image $ECR_REPOSITORY_URI:$IMAGE_TAG"
+      - docker push "$ECR_REPOSITORY_URI:$IMAGE_TAG"
+      - printf '{"image":"%s"}\n' "$ECR_REPOSITORY_URI:$IMAGE_TAG" > image-detail.json
+
+artifacts:
+  files:
+    - image-detail.json

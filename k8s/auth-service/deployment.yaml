@@ -1,0 +1,67 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: auth-service
+  namespace: hackathon
+  labels:
+    app.kubernetes.io/name: auth-service
+    app.kubernetes.io/part-of: jkt-hackathon-2026
+    tags.datadoghq.com/env: hackathon
+    tags.datadoghq.com/service: auth-service
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app.kubernetes.io/name: auth-service
+  template:
+    metadata:
+      labels:
+        app.kubernetes.io/name: auth-service
+        app.kubernetes.io/part-of: jkt-hackathon-2026
+        tags.datadoghq.com/env: hackathon
+        tags.datadoghq.com/service: auth-service
+    spec:
+      containers:
+        - name: auth-service
+          image: 681244251312.dkr.ecr.ap-southeast-3.amazonaws.com/auth-service:latest
+          imagePullPolicy: Always
+          ports:
+            - name: http
+              containerPort: 8080
+          envFrom:
+            - configMapRef:
+                name: auth-service-config
+            - secretRef:
+                name: auth-service-secrets
+          env:
+            - name: DD_VERSION
+              valueFrom:
+                fieldRef:
+                  fieldPath: metadata.labels['tags.datadoghq.com/version']
+            - name: DD_ENTITY_ID
+              valueFrom:
+                fieldRef:
+                  fieldPath: metadata.uid
+          readinessProbe:
+            httpGet:
+              path: /actuator/health
+              port: http
+            initialDelaySeconds: 20
+            periodSeconds: 10
+            timeoutSeconds: 3
+            failureThreshold: 6
+          livenessProbe:
+            httpGet:
+              path: /actuator/health
+              port: http
+            initialDelaySeconds: 60
+            periodSeconds: 20
+            timeoutSeconds: 3
+            failureThreshold: 3
+          resources:
+            requests:
+              cpu: 250m
+              memory: 512Mi
+            limits:
+              cpu: 750m
+              memory: 1Gi
