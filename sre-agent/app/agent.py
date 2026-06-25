@@ -14,6 +14,7 @@ from __future__ import annotations
 
 import json
 import logging
+import re
 from dataclasses import dataclass, field
 from datetime import datetime, timezone
 from typing import Any, Optional
@@ -36,6 +37,14 @@ from .scenarios import AlertScenario
 from .tools import TOOL_CONFIG, execute_tool
 
 logger = logging.getLogger(__name__)
+
+_THINKING_RE = re.compile(r"<thinking>.*?</thinking>", re.IGNORECASE | re.DOTALL)
+
+
+def _strip_thinking(text: str) -> str:
+    """Remove model ``<thinking>...</thinking>`` scratchpad blocks from RCA text."""
+    return _THINKING_RE.sub("", text).strip()
+
 
 SYSTEM_PROMPT = """You are an autonomous Site Reliability Engineering (SRE) agent for a \
 Kubernetes platform. Your mission: investigate a production alert, confirm the root \
@@ -227,7 +236,7 @@ class InvestigationAgent:
             if msg.get("role") != "assistant":
                 continue
             for block in msg.get("content", []):
-                text = (block.get("text") or "").strip() if isinstance(block, dict) else ""
+                text = _strip_thinking(block.get("text") or "") if isinstance(block, dict) else ""
                 if len(text) > 10:
                     findings.append(text)
                     summary = text

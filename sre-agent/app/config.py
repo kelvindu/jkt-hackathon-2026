@@ -67,6 +67,9 @@ class Settings:
     app_source_dir: str
     auto_remediate: bool
 
+    # Notification sinks
+    google_chat_webhook_url: str
+
     @property
     def has_aws(self) -> bool:
         return bool(os.environ.get("AWS_ACCESS_KEY_ID") and os.environ.get("AWS_SECRET_ACCESS_KEY"))
@@ -124,6 +127,7 @@ def load(*, require: bool = True) -> Settings:
         auth_service_url=(os.environ.get("AUTH_SERVICE_URL") or DEFAULT_AUTH_SERVICE_URL).rstrip("/"),
         app_source_dir=os.environ.get("APP_SOURCE_DIR", "./app_under_test"),
         auto_remediate=_env_bool("AUTO_REMEDIATE", True),
+        google_chat_webhook_url=os.environ.get("GOOGLE_CHAT_WEBHOOK_URL", ""),
     )
 
 
