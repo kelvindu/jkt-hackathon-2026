@@ -1,0 +1,25 @@
+version: "1.0"
+scenarios:
+  - id: "postgres-slow-queries"
+    name: "Database Query Performance Degradation"
+    description: "PostgreSQL query latency increased 5x above baseline"
+    initial_context:
+      alert_time: "2024-01-15T16:45:00Z"
+      database: "orders-db"
+      host: "postgres-primary-01"
+      baseline_p95: "50ms"
+      current_p95: "250ms"
+      affected_queries:
+        - "SELECT orders WHERE status='pending'"
+        - "UPDATE inventory SET quantity=quantity-1"
+      active_connections: 450
+      max_connections: 500
+    investigation_prompt: >
+      Investigate the database performance degradation.
+      Check for slow queries, connection pool exhaustion,
+      index issues, and recent schema changes.
+    metadata:
+      severity: "critical"
+      team: "database"
+      oncall: "db-oncall@example.com"
+      runbook: "https://wiki.example.com/runbooks/postgres-slow-queries"

@@ -1,0 +1,20 @@
+version: "1.0"
+scenarios:
+  - id: "checkout-high-errors"
+    name: "High Error Rate - Checkout API"
+    description: "Error rate spike on /api/checkout endpoint"
+    initial_context:
+      alert_time: "2024-01-15T14:30:00Z"
+      service: "checkout-service"
+      endpoint: "/api/checkout"
+      error_rate_baseline: "0.1%"
+      error_rate_current: "15%"
+      duration: "30 minutes"
+      affected_users: "~500"
+    investigation_prompt: >
+      Investigate the root cause of the sudden error rate increase on the checkout API.
+      Focus on recent deployments, infrastructure changes, and dependency health.
+    metadata:
+      severity: "high"
+      team: "payments"
+      runbook: "https://wiki.example.com/runbooks/checkout-errors"

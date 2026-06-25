@@ -1,0 +1,29 @@
+agent:
+  name: "incident-response-agent"
+  version: "1.0.0"
+  max_iterations: 10
+
+bedrock:
+  model_id: "amazon.nova-micro-v1:0"
+  region: "us-east-1"
+  max_tokens: 2048
+  temperature: 0.0
+
+mcp:
+  server_command: ["npx", "-y", "@datadog/mcp-server-datadog"]
+  connection_timeout: 30
+  tool_timeout: 60
+
+datadog:
+  api_url: "https://api.datadoghq.com"
+  site: "datadoghq.com"
+  events_endpoint: "/api/v1/events"
+
+logging:
+  level: "INFO"
+  format: "json"
+  output: "stdout"
+
+rca:
+  max_findings: 10
+  include_conversation_history: false

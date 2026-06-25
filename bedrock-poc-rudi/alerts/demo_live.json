@@ -1,0 +1,45 @@
+{
+  "version": "1.0",
+  "scenarios": [
+    {
+      "id": "inc_43_inc_13_checkout",
+      "name": "Checkout API Error Spike — Missing HTTP Timeouts + N+1 Pattern",
+      "description": "Error rate on /api/checkout jumped from 0.1% to 15%. Datadog shows 502/504 gateway errors, connection pool exhaustion, and p95 latency spike. Suspected application-level bugs in the order-fetching service.",
+      "initial_context": {
+        "incident_ids": ["inc_43", "inc_13"],
+        "incident_43_issue": "requests library hung indefinitely because no timeout was specified on external HTTP calls",
+        "incident_13_issue": "Slow performance caused by N+1 pattern — one HTTP request per order instead of batching",
+        "expected_resolution": "Add timeout=5 to all requests.get() calls; batch line-item fetches instead of looping per order",
+        "alert_time": "2024-01-15T14:30:00Z",
+        "service": "checkout-service",
+        "endpoint": "/api/checkout",
+        "error_rate_baseline": "0.1%",
+        "error_rate_current": "15%",
+        "error_codes": ["500", "502", "504"],
+        "duration": "30 minutes",
+        "affected_users": "~500",
+        "suspected_file": "services/orders.py",
+        "symptoms": [
+          "Connection pool exhausted on checkout-service",
+          "p95 latency increased 10x",
+          "Upstream line-items API timing out under load"
+        ],
+        "suspected_technical_cause": "N+1 HTTP requests per order + missing timeouts in services/orders.py causing connection pool exhaustion",
+        "business_metrics": {
+          "stuck_customers": 42,
+          "avg_order_value_usd": 29.99,
+          "checkout_attempts_per_min": 0.35,
+          "financial_bleed_rate_usd_per_min": 145,
+          "runbook_savings_usd": 2000
+        }
+      },
+      "investigation_prompt": "Investigate the checkout API error spike using Datadog observability tools (logs, metrics, traces). If the root cause is application-level code (missing HTTP timeouts or N+1 query pattern), you MUST: (1) call read_application_code with filepath 'services/orders.py' to inspect the source, (2) rewrite the full corrected file, (3) call create_github_pr to submit the fix, and (4) include the PR URL in your final RCA summary as 'Fix PR: <url>'.",
+      "metadata": {
+        "severity": "high",
+        "team": "payments",
+        "demo": true,
+        "runbook": "https://wiki.example.com/runbooks/checkout-errors"
+      }
+    }
+  ]
+}
