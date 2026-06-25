@@ -1,0 +1,14 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: ops-simulator-config
+  namespace: hackathon
+  labels:
+    app.kubernetes.io/name: ops-simulator
+data:
+  AUTH_SERVICE_BASE_URL: http://auth-service.hackathon.svc.cluster.local
+  WEBHOOK_URL: http://auth-service.hackathon.svc.cluster.local/api/v1/auth/validate
+  SIMULATOR_MODE: chaos
+  CONCURRENT_THREADS: "12"
+  FLOOD_DURATION_SECONDS: "10"
+  REQUEST_TIMEOUT_SECONDS: "30"

@@ -1,0 +1,7 @@
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: hackathon
+  labels:
+    app.kubernetes.io/part-of: jkt-hackathon-2026
+    env: hackathon
