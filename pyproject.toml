@@ -1,0 +1,31 @@
+[project]
+name = "track-aiops"
+version = "0.1.0"
+description = "CLI to invoke AWS Bedrock Nova Pro and emit a Datadog LLM observability span"
+requires-python = ">=3.10"
+dependencies = [
+    "boto3>=1.34.0",
+    "ddtrace>=2.0.0",
+    "python-dotenv>=1.0.0",
+]
+
+[project.optional-dependencies]
+dev = [
+    "pytest>=7.4.0",
+    "hypothesis>=6.92.0",
+]
+
+[project.scripts]
+track-aiops = "track_aiops.cli:main"
+
+[build-system]
+requires = ["setuptools>=68.0", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[tool.setuptools]
+packages = ["track_aiops"]
+
+[tool.pytest.ini_options]
+testpaths = ["track_aiops"]
+python_files = ["test_*.py", "*_test.py"]
+python_functions = ["test_*"]

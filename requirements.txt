@@ -1,0 +1,9 @@
+# track_aiops package dependencies
+# Runtime
+boto3>=1.34.0
+ddtrace>=2.0.0
+python-dotenv>=1.0.0
+
+# Development / tests
+pytest>=7.4.0
+hypothesis>=6.92.0
