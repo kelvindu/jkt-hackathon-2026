@@ -1,0 +1,13 @@
+apiVersion: kustomize.config.k8s.io/v1beta1
+kind: Kustomization
+
+resources:
+  - namespace.yaml
+  - configmap.yaml
+  - deployment.yaml
+  - service.yaml
+  - service-lb.yaml
+
+images:
+  - name: 681244251312.dkr.ecr.ap-southeast-3.amazonaws.com/sre-agent
+    newTag: "20260625133806"

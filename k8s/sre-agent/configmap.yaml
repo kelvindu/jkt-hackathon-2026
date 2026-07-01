@@ -1,0 +1,22 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: sre-agent-config
+  namespace: hackathon
+  labels:
+    app.kubernetes.io/name: sre-agent
+data:
+  DD_SITE: datadoghq.com
+  DD_ENV: hackathon
+  DD_SERVICE: sre-incident-agent
+  DD_LLMOBS_ML_APP: ADMO
+  DD_LLMOBS_ENABLED: "1"
+  DD_LLMOBS_AGENTLESS_ENABLED: "1"
+  AWS_REGION: ap-southeast-3
+  BEDROCK_MODEL_ID: amazon.nova-pro-v1:0
+  AUTH_SERVICE_URL: http://auth-service.hackathon.svc.cluster.local
+  APP_SOURCE_DIR: /app/app_under_test
+  MAX_ITERATIONS: "8"
+  AUTO_REMEDIATE: "true"
+  BEDROCK_GUARDRAIL_ID: ""
+  BEDROCK_GUARDRAIL_VERSION: DRAFT

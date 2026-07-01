@@ -1,0 +1,74 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: sre-agent
+  namespace: hackathon
+  labels:
+    app.kubernetes.io/name: sre-agent
+    app.kubernetes.io/part-of: jkt-hackathon-2026
+    tags.datadoghq.com/service: sre-incident-agent
+    tags.datadoghq.com/env: hackathon
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app.kubernetes.io/name: sre-agent
+  template:
+    metadata:
+      labels:
+        app.kubernetes.io/name: sre-agent
+        app.kubernetes.io/part-of: jkt-hackathon-2026
+        tags.datadoghq.com/service: sre-incident-agent
+        tags.datadoghq.com/env: hackathon
+      annotations:
+        ad.datadoghq.com/sre-agent.logs: '[{"source":"python","service":"sre-incident-agent"}]'
+    spec:
+      containers:
+        - name: sre-agent
+          image: 681244251312.dkr.ecr.ap-southeast-3.amazonaws.com/sre-agent:latest
+          imagePullPolicy: Always
+          ports:
+            - name: http
+              containerPort: 9000
+          envFrom:
+            - configMapRef:
+                name: sre-agent-config
+            - secretRef:
+                name: sre-agent-secrets
+          readinessProbe:
+            httpGet:
+              path: /healthz
+              port: http
+            initialDelaySeconds: 10
+            periodSeconds: 10
+            timeoutSeconds: 3
+            failureThreshold: 6
+          livenessProbe:
+            httpGet:
+              path: /healthz
+              port: http
+            initialDelaySeconds: 20
+            periodSeconds: 15
+            timeoutSeconds: 3
+            failureThreshold: 4
+          resources:
+            requests:
+              cpu: 150m
+              memory: 256Mi
+            limits:
+              cpu: 750m
+              memory: 768Mi
+          securityContext:
+            runAsNonRoot: true
+            runAsUser: 10001
+            allowPrivilegeEscalation: false
+            readOnlyRootFilesystem: true
+            capabilities:
+              drop:
+                - ALL
+          volumeMounts:
+            - name: tmp
+              mountPath: /tmp
+      volumes:
+        - name: tmp
+          emptyDir: {}
